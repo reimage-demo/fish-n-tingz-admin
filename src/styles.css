@@ -5,9 +5,9 @@
     sans-serif;
   color: #24352b;
   background: #f6f7f4;
-  --green: #24613d;
+  --green: #a9151c;
   --line: #e0e6df;
-  --muted: #728074;
+  --muted: #58634e;
 }
 * {
   box-sizing: border-box;
@@ -34,7 +34,7 @@ button {
   background: var(--green);
   color: white;
   padding: 12px 20px;
-  border-radius: 7px;
+  border-radius: 2px;
   font-size: 13px;
   font-weight: 600;
   min-height: 44px;
@@ -59,7 +59,7 @@ select {
   border: 1px solid var(--line);
   background: white;
   padding: 12px 14px;
-  border-radius: 7px;
+  border-radius: 2px;
   color: #24352b;
   max-width: 100%;
 }
@@ -117,16 +117,15 @@ h2 {
   display: grid;
   place-items: center;
   padding: 30px;
-  background: linear-gradient(120deg, #f1f5ec, #fff);
+  background: #259d0a;
 }
 .login section {
   width: 440px;
   max-width: 100%;
   padding: 40px;
   border: 1px solid var(--line);
-  border-radius: 15px;
+  border-radius: 2px;
   background: white;
-  box-shadow: 0 20px 80px #1a472608;
 }
 .login img {
   width: 115px;
@@ -153,7 +152,7 @@ h2 {
   color: #a32929 !important;
   background: #fff0ec;
   padding: 12px;
-  border-radius: 6px;
+  border-radius: 2px;
 }
 .setup {
   padding: 60px;
@@ -192,7 +191,7 @@ aside nav {
 aside nav button {
   border: 0;
   background: transparent;
-  color: #738073;
+  color: #58634e;
   text-align: left;
   padding: 12px 15px;
   font-weight: 400;
@@ -248,15 +247,7 @@ aside .staff {
   color: var(--muted);
   white-space: nowrap;
 }
-.live-dot:before {
-  content: "";
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  background: #418748;
-  border-radius: 50%;
-  margin-right: 7px;
-}
+
 .stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -267,7 +258,7 @@ aside .staff {
   padding: 25px;
   background: white;
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 2px;
 }
 .stats span,
 .stats small {
@@ -288,7 +279,7 @@ aside .staff {
   background: #eaf0e5;
   display: grid;
   grid-template-columns: 1fr 0.9fr;
-  border-radius: 12px;
+  border-radius: 2px;
   overflow: hidden;
   margin-bottom: 30px;
 }
@@ -311,7 +302,7 @@ aside .staff {
 .panel {
   background: white;
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 2px;
   padding: 28px;
   margin-bottom: 25px;
 }
@@ -376,7 +367,7 @@ aside .staff {
 .item-cell img {
   width: 52px;
   height: 52px;
-  border-radius: 7px;
+  border-radius: 2px;
   object-fit: cover;
 }
 .item-cell strong {
@@ -390,7 +381,7 @@ aside .staff {
 }
 .badge {
   display: inline-block;
-  border-radius: 20px;
+  border-radius: 2px;
   padding: 5px 10px;
   font-size: 10px;
   background: #edf4e8;
@@ -416,7 +407,7 @@ aside .staff {
   max-width: 100%;
   max-height: 90dvh;
   overflow: auto;
-  border-radius: 14px;
+  border-radius: 2px;
   background: white;
   padding: 35px;
   position: relative;
@@ -457,7 +448,7 @@ aside .staff {
   width: 100%;
   height: 230px;
   object-fit: cover;
-  border-radius: 7px;
+  border-radius: 2px;
   margin-bottom: 20px;
 }
 .event-card h2 {
@@ -475,7 +466,7 @@ aside .staff {
   padding: 12px 18px;
   background: #eaf2e4;
   color: var(--green);
-  border-radius: 8px;
+  border-radius: 2px;
   font-size: 12px;
   margin-bottom: 25px;
 }
@@ -642,7 +633,6 @@ body:has(.modal-backdrop) {
 }
 .modal::backdrop {
   background: #153221ac;
-  backdrop-filter: blur(3px);
 }
 body:has(dialog[open]) {
   overflow: hidden;
@@ -662,5 +652,87 @@ body:has(dialog[open]) {
   }
   .dashboard main > header {
     gap: 10px;
+  }
+}
+
+@font-face {
+  font-family: Barlow Condensed;
+  src: url("./fonts/barlow-condensed-bold.ttf") format("truetype");
+  font-weight: 700;
+  font-display: swap;
+}
+h1,
+h2,
+h3 {
+  font-family: "Barlow Condensed", Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+h1 {
+  font-size: 48px;
+}
+.dashboard aside {
+  border-top: 5px solid #259d0a;
+}
+.overview-feature {
+  background: #edf4e9;
+}
+.reservation-row {
+  border-top: 1px solid var(--line);
+  padding: 24px 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+}
+.reservation-row h3 {
+  font-size: 27px;
+  margin: 0 0 12px;
+}
+.reservation-row p {
+  margin: 0 0 12px;
+}
+.reservation-row a {
+  text-decoration: underline;
+}
+.reservation-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 150px;
+}
+.reservations > label {
+  max-width: 280px;
+}
+.reservation-notes {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.reservation-row small {
+  color: var(--muted);
+}
+:focus-visible {
+  outline: 3px solid #a9151c;
+  outline-offset: 3px;
+}
+@media (max-width: 700px) {
+  .reservation-row {
+    display: block;
+  }
+  .reservation-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 18px;
+  }
+  .reservation-actions button {
+    font-size: 12px;
+  }
+  .login {
+    padding: 20px;
+  }
+  .login section {
+    padding: 28px;
+  }
+  aside nav button {
+    white-space: nowrap;
   }
 }

@@ -13,9 +13,9 @@ function Login({ onLogin }) {
     <div className="login">
       <section>
         <img src="assets/logo.webp" alt="Fish N Tingz" />
-        <p className="eyebrow">THE PEOPLE BEHIND THE GOOD TINGZ</p>
+        <p className="eyebrow">FISH N TINGZ STAFF PORTAL</p>
         <h1>Welcome back.</h1>
-        <p>Sign in to manage your menu, events, and restaurant.</p>
+        <p>Sign in to manage reservations, your menu, and events.</p>
         <form
           onSubmit={async (e) => {
             e.preventDefault();
@@ -56,9 +56,9 @@ function Login({ onLogin }) {
               {error}
             </p>
           )}
-          <button disabled={busy}>{busy ? "Signing in…" : "Sign in →"}</button>
+          <button disabled={busy}>{busy ? "Signing in…" : "Sign in "}</button>
         </form>
-        <a href={publicSite}>← Back to the restaurant</a>
+        <a href={publicSite}> Back to the restaurant</a>
       </section>
     </div>
   );
@@ -362,6 +362,99 @@ function Settings({ data, token, notify }) {
     </section>
   );
 }
+function Reservations({ token, notify }) {
+  const [status, setStatus] = useState("pending"),
+    [busy, setBusy] = useState("");
+  const rows = useQuery(api.reservations.list, { token, status });
+  const update = useMutation(api.reservations.setStatus);
+  async function change(id, next) {
+    setBusy(id);
+    try {
+      await update({ token, id, status: next });
+      notify("Reservation updated. Contact the guest to confirm the change.");
+    } catch {
+      notify("Unable to update the reservation. Please try again.", true);
+    } finally {
+      setBusy("");
+    }
+  }
+  return (
+    <section className="panel reservations">
+      <h2>Table reservations</h2>
+      <p>
+        Review requests and contact the guest by phone. Changing the status does
+        not send an automatic message or reserve capacity in another system.
+      </p>
+      <label>
+        Show requests
+        <select value={status} onChange={(e) => setStatus(e.target.value)}>
+          {["pending", "confirmed", "declined", "cancelled"].map((s) => (
+            <option key={s} value={s}>
+              {s[0].toUpperCase() + s.slice(1)}
+            </option>
+          ))}
+        </select>
+      </label>
+      <p className="hint">
+        Showing up to 200 requests per status, latest date first. All times are
+        Eastern Time.
+      </p>
+      {!rows ? (
+        <p>Loading reservations…</p>
+      ) : !rows.length ? (
+        <p>No {status} reservations.</p>
+      ) : (
+        rows.map((r) => (
+          <article className="reservation-row" key={r._id}>
+            <div>
+              <h3>
+                {r.name} · {r.party} {r.party === 1 ? "guest" : "guests"}
+              </h3>
+              <p>
+                <strong>
+                  {new Date(r.date + "T12:00:00Z").toLocaleDateString("en-US", {
+                    timeZone: "UTC",
+                    weekday: "short",
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })}{" "}
+                  · {r.time} ET
+                </strong>
+                <br />
+                <a href={"tel:" + r.phone}>{r.phone}</a>
+              </p>
+              {r.notes && <p className="reservation-notes">{r.notes}</p>}
+              <small>
+                {r.reference} · {r.status}
+              </small>
+            </div>
+            <div className="reservation-actions">
+              {["confirmed", "declined", "cancelled", "pending"]
+                .filter((s) => s !== r.status)
+                .map((s) => (
+                  <button
+                    key={s}
+                    className={s === "confirmed" ? "" : "secondary"}
+                    disabled={busy === r._id}
+                    onClick={() => change(r._id, s)}
+                  >
+                    {s === "confirmed"
+                      ? "Confirm table"
+                      : s === "declined"
+                        ? "Decline"
+                        : s === "cancelled"
+                          ? "Cancel request"
+                          : "Reopen request"}
+                  </button>
+                ))}
+            </div>
+          </article>
+        ))
+      )}
+    </section>
+  );
+}
 function Dashboard({ token, user, onLogout }) {
   const data = useQuery(
       api.content.dashboard,
@@ -389,22 +482,23 @@ function Dashboard({ token, user, onLogout }) {
         <img src="assets/logo.webp" alt="Fish N Tingz" />
         <p className="eyebrow">STAFF PORTAL</p>
         <nav>
-          {["Overview", "Menu", "Events", "Settings"].map((t, n) => (
-            <button
-              key={t}
-              className={tab === t ? "active" : ""}
-              onClick={() => {
-                setTab(t);
-                setNotice(null);
-              }}
-            >
-              <span>{["◫", "☷", "▦", "⚙"][n]}</span>
-              {t}
-            </button>
-          ))}
+          {["Overview", "Reservations", "Menu", "Events", "Settings"].map(
+            (t) => (
+              <button
+                key={t}
+                className={tab === t ? "active" : ""}
+                onClick={() => {
+                  setTab(t);
+                  setNotice(null);
+                }}
+              >
+                {t}
+              </button>
+            ),
+          )}
         </nav>
         <a href={publicSite} target="_blank" rel="noopener">
-          View website ↗
+          View website
         </a>
         <div className="staff">
           <strong>{user.username}</strong>
@@ -418,12 +512,14 @@ function Dashboard({ token, user, onLogout }) {
             <p className="eyebrow">FISH N TINGZ · MANCHESTER</p>
             <h1>
               {tab === "Overview"
-                ? "Good things start here."
+                ? "Your restaurant."
                 : tab === "Menu"
-                  ? "On the menu."
+                  ? "Menu."
                   : tab === "Events"
-                    ? "Bring people together."
-                    : "Make it yours."}
+                    ? "Events."
+                    : tab === "Reservations"
+                      ? "Reservations."
+                      : "Settings."}
             </h1>
           </div>
           <div className="header-actions">
@@ -490,7 +586,7 @@ function Dashboard({ token, user, onLogout }) {
                       guests in the loop.
                     </p>
                     <button onClick={() => setTab("Menu")}>
-                      Manage your menu →
+                      Manage your menu
                     </button>
                   </div>
                   <img
@@ -501,13 +597,19 @@ function Dashboard({ token, user, onLogout }) {
                 <section className="panel">
                   <h2>Your connections</h2>
                   <div className="connection-row">
+                    <span>Table reservation requests</span>
+                    <button onClick={() => setTab("Reservations")}>
+                      Review requests
+                    </button>
+                  </div>
+                  <div className="connection-row">
                     <span>Online ordering · Toast</span>
                     <a
                       href={data.settings.orderingUrl}
                       target="_blank"
                       rel="noopener"
                     >
-                      Open ordering ↗
+                      Open ordering
                     </a>
                   </div>
                   <div className="connection-row">
@@ -518,11 +620,14 @@ function Dashboard({ token, user, onLogout }) {
                     >
                       {data.settings.bookingUrl
                         ? "Manage booking link"
-                        : "Add booking link →"}
+                        : "Add booking link "}
                     </button>
                   </div>
                 </section>
               </>
+            )}
+            {tab === "Reservations" && (
+              <Reservations token={token} notify={notify} />
             )}
             {tab === "Menu" && (
               <>
