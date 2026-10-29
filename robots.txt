@@ -1,0 +1,5 @@
+# The staff portal sends noindex,nofollow in its HTML before JavaScript runs.
+# Allow crawlers to read that directive: Disallow / would prevent de-indexing.
+# Reservation data is protected by backend authentication, not by robots.txt.
+User-agent: *
+Allow: /
